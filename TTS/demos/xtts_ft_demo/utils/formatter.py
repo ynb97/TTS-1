@@ -158,3 +158,10 @@ def format_audio_list(audio_files, target_language="en", out_path=None, buffer=0
     gc.collect()
 
     return train_metadata_path, eval_metadata_path, audio_total_size
+
+
+if __name__ == "__main__":
+    format_audio_list(audio_files=["/backend/speech_reporter.wav"],
+                      out_path="/home",
+                      target_language="ja"
+)

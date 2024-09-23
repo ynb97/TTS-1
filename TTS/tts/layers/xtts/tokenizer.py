@@ -229,6 +229,21 @@ _abbreviations = {
             # Korean doesn't typically use abbreviations in the same way as Latin-based scripts.
         ]
     ],
+    "ja": [
+        (re.compile("\\b%s\\." % x[0], re.IGNORECASE), x[1])
+        for x in [
+            ("日経", "日本経済新聞"),
+            ("農大", "東京農業大学"),
+            ("入管", "入国管理局"),
+            ("高校", "高等学校"),
+            ("小田急", "小田原急行電鉄"),
+            ("都庁", "東京都庁舎"),
+            ("東大", "東京大学"),
+            ("国連", "国際連合"),
+            ("関西外大", "関西外国語大学"), # The above abbr. have been taken directly from https://en.wikipedia.org/wiki/Japanese_abbreviated_and_contracted_words#Long_kanji_names
+            # Feel free to add more if needed.
+        ]
+    ]
 }
 
 
@@ -425,6 +440,18 @@ _symbols_multilingual = {
             ("°", " 도 "),
         ]
     ],
+    "ja": [
+        (re.compile(r"%s" % re.escape(x[0]), re.IGNORECASE), x[1])
+        for x in [
+            ("&", "そして"),
+            ("@", "に"),
+            ("%", "パーセント"),
+            ("#", "番号"),
+            ("$","ドル"),
+            ("", "ポンド"),
+            ("°", "度"),
+        ]
+    ]
 }
 
 
@@ -450,6 +477,7 @@ _ordinal_re = {
     "tr": re.compile(r"([0-9]+)(\.|inci|nci|uncu|üncü|\.)"),
     "hu": re.compile(r"([0-9]+)(\.|adik|edik|odik|edik|ödik|ödike|ik)"),
     "ko": re.compile(r"([0-9]+)(번째|번|차|째)"),
+    "ja": re.compile(r"([0-9]+)(だん|め)")
 }
 _number_re = re.compile(r"[0-9]+")
 _currency_re = {
@@ -512,6 +540,7 @@ def _expand_currency(m, lang="en", currency="USD"):
 
 
 def _expand_ordinal(m, lang="en"):
+    print(m)
     return num2words(int(m.group(1)), ordinal=True, lang=lang if lang != "cs" else "cz")
 
 
@@ -535,6 +564,7 @@ def expand_numbers_multilingual(text, lang="en"):
             pass
         if lang != "tr":
             text = re.sub(_decimal_number_re, lambda m: _expand_decimal_point(m, lang), text)
+        print("here", text)
         text = re.sub(_ordinal_re[lang], lambda m: _expand_ordinal(m, lang), text)
         text = re.sub(_number_re, lambda m: _expand_number(m, lang), text)
     return text
@@ -555,6 +585,7 @@ def multilingual_cleaners(text, lang):
         text = text.replace("Ö", "ö")
         text = text.replace("Ü", "ü")
     text = lowercase(text)
+    print(text)
     text = expand_numbers_multilingual(text, lang)
     text = expand_abbreviations_multilingual(text, lang)
     text = expand_symbols_multilingual(text, lang=lang)
