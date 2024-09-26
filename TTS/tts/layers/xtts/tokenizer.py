@@ -540,7 +540,6 @@ def _expand_currency(m, lang="en", currency="USD"):
 
 
 def _expand_ordinal(m, lang="en"):
-    print(m)
     return num2words(int(m.group(1)), ordinal=True, lang=lang if lang != "cs" else "cz")
 
 
@@ -564,7 +563,6 @@ def expand_numbers_multilingual(text, lang="en"):
             pass
         if lang != "tr":
             text = re.sub(_decimal_number_re, lambda m: _expand_decimal_point(m, lang), text)
-        print("here", text)
         text = re.sub(_ordinal_re[lang], lambda m: _expand_ordinal(m, lang), text)
         text = re.sub(_number_re, lambda m: _expand_number(m, lang), text)
     return text
@@ -585,7 +583,6 @@ def multilingual_cleaners(text, lang):
         text = text.replace("Ö", "ö")
         text = text.replace("Ü", "ü")
     text = lowercase(text)
-    print(text)
     text = expand_numbers_multilingual(text, lang)
     text = expand_abbreviations_multilingual(text, lang)
     text = expand_symbols_multilingual(text, lang=lang)
