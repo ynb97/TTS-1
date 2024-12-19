@@ -153,7 +153,7 @@ class XTTSDataset(torch.utils.data.Dataset):
             if self.debug_failures:
                 print(f"Ignoring sample {sample['audio_file']} because it was already ignored before !!")
             # call get item again to get other sample
-            return self[1]
+            return None
 
         # try to load the sample, if fails added it to the failed samples list
         try:
@@ -162,7 +162,7 @@ class XTTSDataset(torch.utils.data.Dataset):
             if self.debug_failures:
                 print(f"error loading {sample['audio_file']} {sys.exc_info()}")
             self.failed_samples.add(sample_id)
-            return self[1]
+            return None
 
         # check if the audio and text size limits and if it out of the limits, added it failed_samples
         if (
@@ -177,7 +177,7 @@ class XTTSDataset(torch.utils.data.Dataset):
                     f"error loading {sample['audio_file']}: ranges are out of bounds; {wav.shape[-1]}, {tseq.shape[0]}"
                 )
             self.failed_samples.add(sample_id)
-            return self[1]
+            return None
 
         res = {
             # 'real_text': text,
